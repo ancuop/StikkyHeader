@@ -15,7 +15,8 @@ public abstract class StikkyHeader {
     protected int mHeightHeader;
     private View.OnTouchListener onTouchListenerOnHeaderDelegate;
     private boolean mAllowTouchBehindHeader;
-
+    private ViewTreeObserver.OnGlobalLayoutListener mOnGlobalLayoutListener;
+    
     protected StikkyHeader(Context context, View header, int minHeightHeader, HeaderAnimator headerAnimator) {
         mContext = context;
         mHeader = header;
@@ -53,14 +54,16 @@ public abstract class StikkyHeader {
             setHeightHeader(height);
         }
 
-        mHeader.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        mOnGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 if (mHeightHeader != mHeader.getHeight()) {
                     setHeightHeader(mHeader.getHeight());
                 }
             }
-        });
+        };
+
+        mHeader.getViewTreeObserver().addOnGlobalLayoutListener(mOnGlobalLayoutListener);
     }
 
     protected void setHeightHeader(final int heightHeader) {
@@ -90,4 +93,12 @@ public abstract class StikkyHeader {
         return mHeader;
     }
 
+    public void cleanMemory() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            mHeader.getViewTreeObserver().removeOnGlobalLayoutListener(mOnGlobalLayoutListener);
+        }
+        else {
+            mHeader.getViewTreeObserver().removeGlobalOnLayoutListener(mOnGlobalLayoutListener);
+        }
+    }
 }
