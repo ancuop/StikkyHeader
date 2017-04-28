@@ -16,7 +16,8 @@ import it.carlom.stikkyheader.core.StikkyHeaderBuilder;
 public class RecyclerStikkyFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
-
+    private StikkyHeaderBuilder.RecyclerViewBuilder stickky;
+    
     public RecyclerStikkyFragment() {
     }
 
@@ -42,11 +43,17 @@ public class RecyclerStikkyFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        StikkyHeaderBuilder.stickTo(mRecyclerView)
-                .setHeader(R.id.header, (ViewGroup) getView())
-                .minHeightHeaderDim(R.dimen.min_height_header)
-                .build();
+        stickky = StikkyHeaderBuilder.stickTo(mRecyclerView);
+        stickky.setHeader(R.id.header, (ViewGroup) getView());
+        stickky.minHeightHeaderDim(R.dimen.min_height_header);
+        stickky.build();
 
         Utils.populateRecyclerView(mRecyclerView);
+    }
+    
+    @Override
+    public void onStop() {
+        super.onStop();
+        stickky.clearMemory();
     }
 }
