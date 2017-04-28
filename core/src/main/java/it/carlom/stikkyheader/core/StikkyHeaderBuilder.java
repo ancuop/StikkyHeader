@@ -123,7 +123,8 @@ public abstract class StikkyHeaderBuilder {
     public static class RecyclerViewBuilder extends StikkyHeaderBuilder {
 
         private final RecyclerView mRecyclerView;
-
+        private StikkyHeaderRecyclerView stikkyHeaderRecyclerView;
+        
         protected RecyclerViewBuilder(final ViewGroup mRecyclerView) {
             super(mRecyclerView.getContext());
             this.mRecyclerView = (RecyclerView) mRecyclerView;
@@ -137,12 +138,15 @@ public abstract class StikkyHeaderBuilder {
                 mAnimator = new HeaderStikkyAnimator();
             }
 
-            final StikkyHeaderRecyclerView stikkyHeaderRecyclerView = new StikkyHeaderRecyclerView(mContext, mRecyclerView, mHeader, mMinHeight, mAnimator);
+            stikkyHeaderRecyclerView = new StikkyHeaderRecyclerView(mContext, mRecyclerView, mHeader, mMinHeight, mAnimator);
             stikkyHeaderRecyclerView.build(mAllowTouchBehindHeader);
 
             return stikkyHeaderRecyclerView;
         }
 
+        public void clearMemory() {
+            stikkyHeaderRecyclerView.cleanMemory();
+        }
     }
 
     public static class ScrollViewBuilder extends StikkyHeaderBuilder {
